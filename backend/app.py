@@ -1,8 +1,13 @@
+# Python解释器路径（虚拟环境）
+# /Users/zhangyujie/develop/backend/venv/bin/python
+# 如果迁移目录或重建虚拟环境，请更新此路径
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
 import os
 import json
+import re
 from dotenv import load_dotenv
 
 # 加载环境变量
@@ -26,23 +31,23 @@ def recommend():
         }
 
         payload = {
-    "model": "deepseek-chat",
-    "messages": [
-        {
-            "role": "system",
-            "content": (
-                "你是食谱推荐助手，根据用户输入推荐食谱。"
-                "仅返回 JSON："
-                "{\"dish_name\":\"菜名\",\"ingredients\":[\"食材\"],\"steps\":[\"步骤\"],\"tips\":\"小贴士\"}"
-                "不要返回解释或额外文字。"
-            )
-        },
-        {
-            "role": "user",
-            "content": query.strip()
+            "model": "deepseek-chat",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": (
+                        "你是食谱推荐助手，根据用户输入推荐食谱。"
+                        "仅返回 JSON："
+                        "{\"dish_name\":\"菜名\",\"ingredients\":[\"食材\"],\"steps\":[\"步骤\"],\"tips\":\"小贴士\"}"
+                        "不要返回解释或额外文字。"
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": query.strip()
+                }
+            ]
         }
-    ]
-}
 
         resp = requests.post(DEEPSEEK_API_URL, json=payload, headers=headers)
 
@@ -51,10 +56,14 @@ def recommend():
 
         result = resp.json()
         reply = result["choices"][0]["message"]["content"]
+        print("AI 原始回复：", repr(reply))
+
+        # 去掉AI返回中的代码块标记
+        json_str = re.sub(r"^```json\s*|\s*```$", "", reply.strip(), flags=re.DOTALL)
 
         # 尝试解析 AI 返回的 JSON 内容
         try:
-            reply_data = json.loads(reply)
+            reply_data = json.loads(json_str)
         except json.JSONDecodeError:
             return jsonify({"error": "AI 返回数据格式错误", "raw_reply": reply}), 500
 
