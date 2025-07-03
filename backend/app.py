@@ -71,6 +71,32 @@ def recommend():
 
     except Exception as e:
         return jsonify({"error": "服务内部异常", "detail": str(e)}), 500
+    
 
+#上传图片功能前端代码
+
+@app.route('/upload', methods=['POST'])
+
+def upload_image():
+    try:
+        if 'image' not in request.files:
+            return jsonify({"error": "没有收到图片文件"}), 400
+        
+        image_file = request.files['image']
+
+        if image_file.filename == '':
+            return jsonify({"error": "文件名为空"}), 400
+        
+        print("收到图片上传请求：", image_file.filename)          #关注返回内容
+        # 临时返回固定菜名（后面接机器学习模型）
+        dish_name = "示例菜品"
+
+        return jsonify({"dish_name": dish_name})
+
+    except Exception as e:
+        return jsonify({"error": "服务内部异常", "detail": str(e)}), 500
+
+
+#调试方便 debug 可以不加
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run(port=5000, debug=True)

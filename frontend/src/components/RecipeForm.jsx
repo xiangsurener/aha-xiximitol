@@ -2,7 +2,7 @@
 // RecipeForm.jsx
 // 智能食谱推荐系统前端组件
 // 用于输入食材、口味、禁忌等信息，调用后端推荐食谱并展示结果
-// 前端启动方法：在终端执行 cd frontend 
+// 前端启动方法：在终端执行 cd frontend （先进develop
 // npm run dev
 import React, { useState } from 'react';
 import axios from 'axios';
@@ -27,9 +27,9 @@ export default function RecipeForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-purple-100 flex justify-center items-start p-8">
+    <div className=" bg-gradient-to-br from-blue-100 to-purple-100 flex justify-center items-start p-8">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-xl">
-        <h1 className="text-3xl font-bold text-center mb-6">智能食谱推荐系统</h1>
+        <h1 className="text-3xl font-bold text-center mb-6">您的个性化定制</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <textarea
             className="border p-2 rounded h-24"
