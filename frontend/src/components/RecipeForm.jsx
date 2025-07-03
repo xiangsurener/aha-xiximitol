@@ -1,3 +1,9 @@
+//前端运行 JS
+// RecipeForm.jsx
+// 智能食谱推荐系统前端组件
+// 用于输入食材、口味、禁忌等信息，调用后端推荐食谱并展示结果
+// 前端启动方法：在终端执行 cd frontend 
+// npm run dev
 import React, { useState } from 'react';
 import axios from 'axios';
 
