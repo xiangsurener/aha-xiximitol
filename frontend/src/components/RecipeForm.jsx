@@ -2,19 +2,22 @@
 // RecipeForm.jsx
 // 智能食谱推荐系统前端组件
 // 用于输入食材、口味、禁忌等信息，调用后端推荐食谱并展示结果
-// 前端启动方法：在终端执行 cd frontend （先进develop
-// npm run dev
+
+// 前端运行方法：在项目根目录下执行 cd frontend，然后运行 npm install && npm run dev
 import React, { useState } from 'react';
 import axios from 'axios';
 
 export default function RecipeForm() {
-  const [query, setQuery] = useState('');
+  const [flavor, setFlavor] = useState('');
+  const [ingredients, setIngredients] = useState('');
+  const [avoid, setAvoid] = useState('');
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    const query = `口味: ${flavor}。食材: ${ingredients}。忌口: ${avoid}。`;
     try {
       const resp = await axios.post('http://127.0.0.1:5000/recommend', { query });
       setRecipe(resp.data);
@@ -31,12 +34,25 @@ export default function RecipeForm() {
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-xl">
         <h1 className="text-3xl font-bold text-center mb-6">您的个性化定制</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <textarea
-            className="border p-2 rounded h-24"
-            placeholder="输入食材、口味偏好或饮食禁忌..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+          <input
+            className="border p-2 rounded"
+            placeholder="口味偏好（例如微辣、清淡）"
+            value={flavor}
+            onChange={(e) => setFlavor(e.target.value)}
             required
+          />
+          <input
+            className="border p-2 rounded"
+            placeholder="主要食材（例如鸡肉、土豆）"
+            value={ingredients}
+            onChange={(e) => setIngredients(e.target.value)}
+            required
+          />
+          <input
+            className="border p-2 rounded"
+            placeholder="忌口（例如花生、海鲜）"
+            value={avoid}
+            onChange={(e) => setAvoid(e.target.value)}
           />
           <button
             className="bg-blue-500 text-white py-2 rounded hover:bg-blue-600 disabled:bg-gray-400"

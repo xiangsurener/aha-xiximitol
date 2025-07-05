@@ -1,15 +1,7 @@
-# 前端 node_modules
-frontend/node_modules/
-
-# 后端虚拟环境
-backend/venv/
-
-# 后端密钥
-backend/.env
 
 # Python 缓存
 __pycache__/
 *.pyc
 
-# VSCode 配置（可选）
-.vscode/
+venv/
+.venv/
