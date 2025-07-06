@@ -98,25 +98,57 @@ def recommend():
         return jsonify({"error": "服务内部异常", "detail": str(e)}), 500
     
 
-#上传图片功能前端代码
-
-@app.route('/upload', methods=['POST'])
-
-def upload_image():
+@app.route('/analyze', methods=['POST'])
+def analyze_food():
     try:
-        if 'image' not in request.files:
-            return jsonify({"error": "没有收到图片文件"}), 400
-        
-        image_file = request.files['image']
+        data = request.get_json()
+        food = data.get('food', '').strip()
 
-        if image_file.filename == '':
-            return jsonify({"error": "文件名为空"}), 400
-        
-        print("收到图片上传请求：", image_file.filename)          #关注返回内容
-        # 临时返回固定菜名（后面接机器学习模型）
-        dish_name = "示例菜品"
+        if not food:
+            return jsonify({"error": "缺少食物名称"}), 400
 
-        return jsonify({"dish_name": dish_name})
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {DEEPSEEK_API_KEY}"
+        }
+
+        payload = {
+            "model": "deepseek-chat",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": (
+                        "你是食品营养分析助手。"
+                        "请根据用户输入的食物名称返回其营养成分、热量（大卡），以及忌口人群或食用风险。"
+                        "仅返回 JSON 格式："
+                        '{"calories":"热量描述","nutrition":"营养成分描述","warning":"忌口人群或食用风险描述"}'
+                        "不要返回解释或其他文字。"
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": f"食物名称：{food}"
+                }
+            ]
+        }
+
+        resp = requests.post(DEEPSEEK_API_URL, json=payload, headers=headers)
+
+        if resp.status_code != 200:
+            return jsonify({"error": "DeepSeek 调用失败", "detail": resp.text}), 500
+
+        result = resp.json()
+        reply = result["choices"][0]["message"]["content"]
+        print("AI 原始回复：", repr(reply))
+
+        json_str = re.sub(r"^```json\s*|\s*```$", "", reply.strip(), flags=re.DOTALL)
+
+        try:
+            reply_data = json.loads(json_str)
+        except json.JSONDecodeError:
+            return jsonify({"error": "AI 返回数据格式错误", "raw_reply": reply}), 500
+
+        return jsonify(reply_data)
 
     except Exception as e:
         return jsonify({"error": "服务内部异常", "detail": str(e)}), 500
