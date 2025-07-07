@@ -10,8 +10,8 @@ import json
 import re
 import glob
 from dotenv import load_dotenv
-
 # 加载环境变量
+
 load_dotenv()
 
 app = Flask(__name__)
@@ -19,6 +19,7 @@ CORS(app)
 
 DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+#设置 DeepSeek API 的 URL 和从环境变量获取 API 密钥
 
 # 本地图片文件夹路径（请确保已下载并解压Kaggle数据集到此目录）
 LOCAL_IMAGE_DIR = os.path.join(os.path.dirname(__file__), 'static', 'food_images')
@@ -30,7 +31,8 @@ def search_image_online(dish_name):
     # 这里只返回一个占位图片
     return 'https://dummyimage.com/400x300/cccccc/000000&text=' + dish_name
 
-@app.route('/recommend', methods=['POST'])
+@app.route('/recommend', methods=['POST'])#定义 /recommend API 端点，处理 POST 请求
+# 该端点用于根据用户输入推荐食谱
 def recommend():
     try:
         data = request.get_json()
@@ -39,7 +41,7 @@ def recommend():
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {DEEPSEEK_API_KEY}"
-        }
+        }#设置请求头，包含内容类型和授权信息
 
         payload = {
             "model": "deepseek-chat",
@@ -58,10 +60,10 @@ def recommend():
                     "content": query.strip()
                 }
             ]
-        }
+        }#构建请求负载，包含模型、消息和用户查询
 
         resp = requests.post(DEEPSEEK_API_URL, json=payload, headers=headers)
-
+        #发送 POST 请求到 DeepSeek API
         if resp.status_code != 200:
             return jsonify({"error": "DeepSeek 调用失败", "detail": resp.text}), 500
 
@@ -98,19 +100,20 @@ def recommend():
         return jsonify({"error": "服务内部异常", "detail": str(e)}), 500
     
 
-@app.route('/analyze', methods=['POST'])
-def analyze_food():
+@app.route('/analyze', methods=['POST'])#定义 /analyze API 端点，处理 POST 请求
+# 该端点用于分析食物的营养成分和热量
+def analyze_food():#定义 /analyze API 端点，处理 POST 请求
     try:
         data = request.get_json()
         food = data.get('food', '').strip()
-
+        # 检查请求数据中是否包含食物名称
         if not food:
             return jsonify({"error": "缺少食物名称"}), 400
 
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {DEEPSEEK_API_KEY}"
-        }
+        }#设置请求头，包含内容类型和授权信息
 
         payload = {
             "model": "deepseek-chat",
@@ -130,7 +133,7 @@ def analyze_food():
                     "content": f"食物名称：{food}"
                 }
             ]
-        }
+        }#构建请求负载，包含模型、消息和用户查询
 
         resp = requests.post(DEEPSEEK_API_URL, json=payload, headers=headers)
 
