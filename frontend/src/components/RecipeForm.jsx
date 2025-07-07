@@ -35,7 +35,7 @@ export default function RecipeForm() {
         <h1 className="text-3xl font-bold text-center mb-6">您的个性化定制</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {/* 口味输入框：用于输入用户的口味偏好 */}
-          <div className="text-xs text-gray-500 mb-[-8px]">请输入您的口味偏好，例如“微辣”、“清淡”</div>
+          
           <label className="font-semibold text-gray-700" htmlFor="flavor-input">口味：</label>
           <input
             id="flavor-input"
@@ -46,7 +46,7 @@ export default function RecipeForm() {
             onChange={(e) => setFlavor(e.target.value)}
             required
           />
-          <div className="text-xs text-gray-500 mb-[-8px]">请输入主要食材，例如“鸡肉”、“土豆”）</div>
+          
           <label className="font-semibold text-gray-700" htmlFor="ingredients-input">食材：</label>
           <input
             id="ingredients-input"
