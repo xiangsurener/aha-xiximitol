@@ -36,6 +36,13 @@ export default function FoodAnalysis() {
           onChange={(e) => setFoodName(e.target.value)}
           className="border p-2 rounded"
         />
+        {/* 进度条开始 */}
+        {loading && (
+          <div className="w-full h-2 bg-gray-200 rounded">
+            <div className="h-2 bg-green-400 rounded animate-pulse" style={{ width: "100%" }}></div>
+          </div>
+        )}
+        {/* 进度条结束 */}
         <button
           type="submit"
           disabled={loading}

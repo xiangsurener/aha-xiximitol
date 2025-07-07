@@ -34,31 +34,69 @@ export default function RecipeForm() {
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-xl">
         <h1 className="text-3xl font-bold text-center mb-6">您的个性化定制</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          {/* 口味输入框：用于输入用户的口味偏好 */}
+          <div className="text-xs text-gray-500 mb-[-8px]">请输入您的口味偏好，例如“微辣”、“清淡”</div>
+          <label className="font-semibold text-gray-700" htmlFor="flavor-input">口味：</label>
           <input
-            className="border p-2 rounded"
+            id="flavor-input"
+            className="border p-2 rounded w-full text-base"
+            style={{ minWidth: '400px' }}
             placeholder="口味偏好（例如微辣、清淡）"
             value={flavor}
             onChange={(e) => setFlavor(e.target.value)}
             required
           />
+          <div className="text-xs text-gray-500 mb-[-8px]">请输入主要食材，例如“鸡肉”、“土豆”）</div>
+          <label className="font-semibold text-gray-700" htmlFor="ingredients-input">食材：</label>
           <input
-            className="border p-2 rounded"
+            id="ingredients-input"
+            className="border p-2 rounded w-full text-base"
+            style={{ minWidth: '400px' }}
             placeholder="主要食材（例如鸡肉、土豆）"
             value={ingredients}
             onChange={(e) => setIngredients(e.target.value)}
             required
           />
+          <label className="font-semibold text-gray-700" htmlFor="avoid-input">忌口：</label>
           <input
-            className="border p-2 rounded"
+            id="avoid-input"
+            className="border p-2 rounded w-full text-base"
+            style={{ minWidth: '400px' }}
             placeholder="忌口（例如花生、海鲜）"
             value={avoid}
             onChange={(e) => setAvoid(e.target.value)}
           />
+          {/* 进度条，仅在 loading 时显示 */}
+          {loading && (
+            <div className="flex items-center gap-2">
+              <div className="w-full bg-blue-200 rounded h-4 overflow-hidden">
+                <div className="bg-blue-500 h-4 rounded animate-pulse w-full"></div>
+              </div>
+              <span className="text-blue-600 text-xs whitespace-nowrap">加载中...</span>
+            </div>
+          )}
+          {/* 进度条结束 */}
           <button
-            className="bg-blue-500 text-white py-2 rounded hover:bg-blue-600 disabled:bg-gray-400"
+            className="bg-blue-500 text-white py-2 rounded hover:bg-blue-600 disabled:bg-gray-400 flex items-center justify-center gap-2"
             type="submit"
             disabled={loading}
           >
+            {loading && (
+              <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+                <circle
+                  className="opacity-25"
+                  cx="12" cy="12" r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="none"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                />
+              </svg>
+            )}
             {loading ? '推荐中...' : '获取推荐'}
           </button>
         </form>

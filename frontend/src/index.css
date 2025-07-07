@@ -3,4 +3,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes progressBar {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.animate-progressBar {
+  animation: progressBar 1.2s linear infinite;
+}
+
 
